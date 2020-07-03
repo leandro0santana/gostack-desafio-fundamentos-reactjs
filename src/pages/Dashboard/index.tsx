@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { format, parseISO } from 'date-fns';
 
 import income from '../../assets/income.svg';
 import outcome from '../../assets/outcome.svg';
@@ -42,26 +41,24 @@ const Dashboard: React.FC = () => {
         (transaction: Transaction) => ({
           ...transaction,
           formattedValue: formatValue(transaction.value),
-          formattedDate: format(
-            parseISO(transaction.created_at.toString()),
-            'dd/MM/yyyy',
+          formattedDate: new Date(transaction.created_at).toLocaleDateString(
+            'pt',
           ),
         }),
       );
 
-      // eslint-disable-next-line no-shadow
-      const income = formatValue(response.data.balance.income);
-      // eslint-disable-next-line no-shadow
-      const outcome = formatValue(response.data.balance.outcome);
-      // eslint-disable-next-line no-shadow
-      const total = formatValue(response.data.balance.total);
+      const balanceFormatted = {
+        income: formatValue(response.data.balance.income),
+        outcome: formatValue(response.data.balance.outcome),
+        total: formatValue(response.data.balance.total),
+      };
 
       setTransactions(transactionsFormatted);
-      setBalance({ income, outcome, total });
+      setBalance(balanceFormatted);
     }
 
     loadTransactions();
-  }, [transactions]);
+  }, []);
 
   return (
     <>
